@@ -31,12 +31,55 @@
 .main-page_content {
   display: flex;
   flex-direction: column;
+  position: relative;
 
   box-sizing: border-box;
   padding: 50px 20px;
 }
 
+.main-page_content_input-wrapper {
+  display: flex;
+}
+
+.main-page_content_input-wrapper--roomError{
+  &:focus-within::before {
+    content: 'Please, check you put the correct room number. It must include only numbers';
+
+    position: absolute;
+    box-sizing: border-box;
+    z-index: 100;
+
+    top: -15px;
+    left: 80px;
+    padding: 5px 15px;
+
+    max-width: 80%;
+
+    border: 1px solid grey;
+    background-color: white;
+  }
+
+  &:focus-within::after {
+    content: '';
+    position: absolute;
+    z-index: 95;
+
+    top: 35px;
+    left: 120px;
+
+    width: 0;
+    height: 0;
+
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid grey;
+  }
+}
+
+
+
 .main-page_input {
+  flex-grow: 1;
   box-sizing: border-box;
   padding: 5px;
   margin-bottom: 30px;
@@ -49,6 +92,14 @@
 
   &:focus {
     border: 1px solid #98B4D4;
+  }
+}
+
+.main-page_content-roomNumber--error {
+  border: 1px solid red;
+
+  &:focus {
+    border: 1px solid red;
   }
 }
 
