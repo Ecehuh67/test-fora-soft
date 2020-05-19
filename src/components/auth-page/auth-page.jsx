@@ -1,5 +1,7 @@
 import socket from '../../socket';
+import axios from 'axios';
 import {AppContext} from '../chat-context/chat-context';
+import {SERVER_URL} from '../../consts';
 
 const AuthPage = () => {
   const {setAuth} = React.useContext(AppContext);
@@ -12,6 +14,22 @@ const AuthPage = () => {
     nodeElem.focus();
     nodeElem.classList.add('main-page_content-roomNumber--error');
     nodeElem.parentNode.classList.add('main-page_content_input-wrapper--roomError')
+  };
+
+  const onSend = () => {
+    const roomElem = roomRef.current;
+    const userElem = userRef.current;
+    const isValid = validateRoomNumber(roomElem.value);
+
+    if(isValid) {
+      setAuth(true);
+      axios.post(`${SERVER_URL}/rooms`, {
+        roomId: roomElem.value,
+        userName: userElem.value
+      });
+    } else {
+      showErrElem(roomElem);
+    }
   };
 
   return (
@@ -33,19 +51,7 @@ const AuthPage = () => {
             <button 
               className="main-page_content-button" 
               type="button"
-              onClick={
-                () => {
-                  const roomElem = roomRef.current;
-                  const isValid = validateRoomNumber(roomElem.value);
-
-                  if(isValid) {
-                    setAuth(true);
-                  } else {
-                    showErrElem(roomElem);
-
-                  }
-                }
-              }
+              onClick={onSend}
             >
               Enter
             </button>
