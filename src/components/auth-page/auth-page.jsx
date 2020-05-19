@@ -1,3 +1,4 @@
+import socket from '../../socket';
 import {AppContext} from '../chat-context/chat-context';
 
 const AuthPage = () => {
@@ -11,7 +12,7 @@ const AuthPage = () => {
     nodeElem.focus();
     nodeElem.classList.add('main-page_content-roomNumber--error');
     nodeElem.parentNode.classList.add('main-page_content_input-wrapper--roomError')
-  }
+  };
 
   return (
     <main className="main-page html-wrapper">
@@ -38,9 +39,10 @@ const AuthPage = () => {
                   const isValid = validateRoomNumber(roomElem.value);
 
                   if(isValid) {
-                    setAuth(true)
+                    setAuth(true);
                   } else {
                     showErrElem(roomElem);
+
                   }
                 }
               }
