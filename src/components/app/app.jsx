@@ -15,15 +15,25 @@ const App = () => {
       }
     })
   };
+
+  const setMessages = (messages) => {
+    setServerData((prev) => {
+      return {
+        ...prev,
+        messages: [...prev.messages, messages]
+      }
+    })
+  };
   
   React.useEffect(() => {
     socket.on('ROOM:SET_USERS', setUsers);
+    socket.on('ROOM:SET_MESSAGES', setMessages)
   }, []);
 
   return (
     <>
       {
-        !userData.isAuth ? <AuthPage/> : <Chat/>
+        !userData.isAuth ? <AuthPage/> : <Chat setMessages={setMessages}/>
       }
     </>
   );

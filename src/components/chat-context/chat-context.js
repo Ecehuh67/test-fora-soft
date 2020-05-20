@@ -3,14 +3,17 @@ const AppContext = React.createContext(null);
 const ChatProvider = (props) => {
   const [userData , setUserData] = React.useState({
     isAuth: false,
-    roomId: '',
+    roomId: null,
     userName: ''
   });
   const [serverData, setServerData] = React.useState({
-    roomId: null,
     users: [],
-    messages: []
+    messages: [],
+    authorMessage: '',
+    tr: ''
   })
+
+  console.log(serverData)
 
   const sampleAppContext = {
     userData,
