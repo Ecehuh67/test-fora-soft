@@ -4,7 +4,7 @@ import {AppContext} from '../chat-context/chat-context';
 import {SERVER_URL} from '../../consts';
 
 const AuthPage = () => {
-  const {setAuth, setRoomNumber, setUserName, roomNumber} = React.useContext(AppContext);
+  const {roomNumber, setUserData, setServerData} = React.useContext(AppContext);
   const [isLoading, setLoading] = React.useState(false);
 
   const roomRef = React.useRef(null);
@@ -35,14 +35,29 @@ const AuthPage = () => {
       .post(`${SERVER_URL}/rooms`, obj)
       .then(() => {
         setLoading(true);
-        setAuth(true);
-        setUserName(obj.userName);
-        setRoomNumber(obj.roomId);
+        setUserData((prev) => {
+          return {
+            ...prev,
+            roomId: obj.roomId,
+            userName: obj.userName,
+            isAuth: true
+          }
+        })
         socket.emit('ROOM_JOIN', obj);
+        axios
+          .get(`${SERVER_URL}/rooms/${obj.roomId}`)
+          .then(({data}) => {
+            setServerData((prev) => {
+              return {
+                ...prev,
+                users: data.users
+              }
+            })
+          })
       })
       .catch((err) => {
         throw new Error(err);
-        console.log('Smth has happend on the server, so let us try again after few minutes')
+        console.log('Smth has happend on the server, so let us try again after few minutes');
       });
   };
 

@@ -5,18 +5,25 @@ import socket from '../../socket';
 import {AppContext} from '../chat-context/chat-context';
 
 const App = () => {
-  const {isAuth} = React.useContext(AppContext);
+  const {userData, setServerData} = React.useContext(AppContext);
+
+  const setUsers = (users) => {
+    setServerData((prev) => {
+      return {
+        ...prev,
+        users
+      }
+    })
+  };
   
   React.useEffect(() => {
-    socket.on('ROOM_JOINED', users => {
-      console.log('New user joined')
-    });
-  }, [])
+    socket.on('ROOM:SET_USERS', setUsers);
+  }, []);
 
   return (
     <>
       {
-        !isAuth ? <AuthPage/> : <Chat/>
+        !userData.isAuth ? <AuthPage/> : <Chat/>
       }
     </>
   );

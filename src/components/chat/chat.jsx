@@ -1,4 +1,8 @@
+import {AppContext} from '../chat-context/chat-context';
+
 const Chat = () => {
+  const {serverData} = React.useContext(AppContext);
+  const [messageValue, setMessafeValue] = React.useState('');
 
   return (
     <main className="main-chat html-wrapper">
@@ -8,10 +12,20 @@ const Chat = () => {
 
         <div className="main-chat_left-column">
           <h2 className="main-chat_caption">Room: ___</h2>
-          <h2 className="main-chat_caption">Users: (_)</h2>
+          <h2 className="main-chat_caption">Users: {serverData.users.length}</h2>
           <ul className="main-chat_list">
-            <li className="main-chat_list-item">User 111</li>
-            <li className="main-chat_list-item main-chat_list-item--active">User 222</li>
+            {
+              serverData.users.map((user, i) => {
+                return (
+                  <li 
+                    className="main-chat_list-item main-chat_list-item--active"
+                    key={new Date() + i}
+                  >
+                  {user}
+                  </li>
+                )
+              })
+            }
           </ul>
         </div>
 
@@ -26,7 +40,16 @@ const Chat = () => {
               </li>
             </ul>
           </div>
-          <textarea className="main-chat_message-input" cols="30" rows="10" placeholder="type your message..."></textarea>
+          <textarea 
+            className="main-chat_message-input" 
+            rows="2" 
+            placeholder="type your message..."
+            value={messageValue}
+            onChange={(evt) => {
+              setMessafeValue(evt.target.value);
+            }}
+          >
+          </textarea>
           <button className="main-chat_message-send">
             <span className="visually-hidden">send</span>
             <svg className="main-chat_message-send-icon" width="24" height="24">

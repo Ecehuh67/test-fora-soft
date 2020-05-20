@@ -1,17 +1,22 @@
 const AppContext = React.createContext(null);
 
 const ChatProvider = (props) => {
-  const [isAuth, setAuth] = React.useState(false);
-  const [roomNumber, setRoomNumber] = React.useState('');
-  const [userName, setUserName] = React.useState('');
+  const [userData , setUserData] = React.useState({
+    isAuth: false,
+    roomId: '',
+    userName: ''
+  });
+  const [serverData, setServerData] = React.useState({
+    roomId: null,
+    users: [],
+    messages: []
+  })
 
   const sampleAppContext = {
-    isAuth,
-    setAuth,
-    setRoomNumber,
-    setUserName,
-    userName,
-    roomNumber
+    userData,
+    serverData,
+    setUserData,
+    setServerData
   }
 
   return (
