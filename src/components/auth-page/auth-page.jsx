@@ -38,9 +38,10 @@ const AuthPage = () => {
         setAuth(true);
         setUserName(obj.userName);
         setRoomNumber(obj.roomId);
-        socket.emit('ROOM_JOINED', obj);
+        socket.emit('ROOM_JOIN', obj);
       })
       .catch((err) => {
+        throw new Error(err);
         console.log('Smth has happend on the server, so let us try again after few minutes')
       });
   };

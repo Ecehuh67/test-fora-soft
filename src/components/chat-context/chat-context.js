@@ -14,8 +14,6 @@ const ChatProvider = (props) => {
     roomNumber
   }
 
-  console.log(roomNumber)
-
   return (
     <AppContext.Provider
       value={sampleAppContext}
