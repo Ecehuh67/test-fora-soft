@@ -27,7 +27,11 @@ app.post('/rooms', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('User connected', socket.id);
+  socket.on('ROOM_JOINED', (data) => {
+    console.log(data);
+  });
+
+  console.log('User connected', socket.id);
 });
 
 server.listen(3001, (err) => {

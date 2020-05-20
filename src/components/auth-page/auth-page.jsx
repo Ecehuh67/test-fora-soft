@@ -4,7 +4,8 @@ import {AppContext} from '../chat-context/chat-context';
 import {SERVER_URL} from '../../consts';
 
 const AuthPage = () => {
-  const {setAuth} = React.useContext(AppContext);
+  const {setAuth, setRoomNumber, setUserName, roomNumber} = React.useContext(AppContext);
+  const [isLoading, setLoading] = React.useState(false);
 
   const roomRef = React.useRef(null);
   const userRef = React.useRef(null);
@@ -16,20 +17,32 @@ const AuthPage = () => {
     nodeElem.parentNode.classList.add('main-page_content_input-wrapper--roomError')
   };
 
-  const onSend = () => {
+  const onSend = async () => {
     const roomElem = roomRef.current;
     const userElem = userRef.current;
     const isValid = validateRoomNumber(roomElem.value);
 
-    if(isValid) {
-      setAuth(true);
-      axios.post(`${SERVER_URL}/rooms`, {
-        roomId: roomElem.value,
-        userName: userElem.value
-      });
-    } else {
-      showErrElem(roomElem);
+    if (!isValid) {
+      return showErrElem(roomElem);
     }
+
+    const obj = {
+      roomId: roomElem.value,
+      userName: userElem.value
+    };
+
+    axios
+      .post(`${SERVER_URL}/rooms`, obj)
+      .then(() => {
+        setLoading(true);
+        setAuth(true);
+        setUserName(obj.userName);
+        setRoomNumber(obj.roomId);
+        socket.emit('ROOM_JOINED', obj);
+      })
+      .catch((err) => {
+        console.log('Smth has happend on the server, so let us try again after few minutes')
+      });
   };
 
   return (
@@ -48,12 +61,15 @@ const AuthPage = () => {
             <div className="main-page_content_input-wrapper">
              <input className="main-page_content-userName main-page_input" ref={userRef}  type="text" placeholder="User name"/>  
             </div>
-            <button 
+            <button
+              disabled={isLoading}
               className="main-page_content-button" 
               type="button"
               onClick={onSend}
             >
-              Enter
+              {
+                !isLoading ? 'Enter' : 'Entering...'
+              }
             </button>
           </div>
         </section>
