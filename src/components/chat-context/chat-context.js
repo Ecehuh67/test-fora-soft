@@ -9,17 +9,34 @@ const ChatProvider = (props) => {
   const [serverData, setServerData] = React.useState({
     users: [],
     messages: [],
-    authorMessage: '',
-    tr: ''
-  })
+    authorMessage: ''
+  });
 
-  console.log(serverData)
+  const setUsers = (users) => {
+    setServerData((prev) => {
+      return {
+        ...prev,
+        users
+      }
+    })
+  };
+
+  const setMessages = (messages) => {
+    setServerData((prev) => {
+      return {
+        ...prev,
+        messages: [...prev.messages, messages]
+      }
+    })
+  };
 
   const sampleAppContext = {
     userData,
     serverData,
     setUserData,
-    setServerData
+    setServerData,
+    setUsers,
+    setMessages
   }
 
   return (

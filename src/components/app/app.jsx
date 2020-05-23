@@ -5,25 +5,7 @@ import socket from '../../socket';
 import {AppContext} from '../chat-context/chat-context';
 
 const App = () => {
-  const {userData, setServerData} = React.useContext(AppContext);
-
-  const setUsers = (users) => {
-    setServerData((prev) => {
-      return {
-        ...prev,
-        users
-      }
-    })
-  };
-
-  const setMessages = (messages) => {
-    setServerData((prev) => {
-      return {
-        ...prev,
-        messages: [...prev.messages, messages]
-      }
-    })
-  };
+  const {userData, setServerData, setUsers, setMessages} = React.useContext(AppContext);
   
   React.useEffect(() => {
     socket.on('ROOM:SET_USERS', setUsers);

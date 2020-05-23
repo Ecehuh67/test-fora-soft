@@ -2,8 +2,13 @@ import {AppContext} from '../chat-context/chat-context';
 import socket from '../../socket';
 
 const Chat = ({setMessages}) => {
-  const {serverData, userData, setServerData} = React.useContext(AppContext);
-  const [messageValue, setMessafeValue] = React.useState('');
+  const {serverData, userData} = React.useContext(AppContext);
+  const [messageValue, setMessageValue] = React.useState('');
+  const messagesRef = React.useRef(null);
+
+  React.useEffect(() => {
+    messagesRef.current.scrollTo(0, 999999);
+  }, [serverData.messages]);
 
   const onSend = () => {
     const obj = {
@@ -13,11 +18,12 @@ const Chat = ({setMessages}) => {
     };
 
     socket.emit('ROOM:NEW_MESSAGE', obj);
-    setMessafeValue('');
+
+    setMessageValue('');
     setMessages({
       userName: userData.userName,
       text: messageValue,
-    })
+    });
   };
 
   return (
@@ -27,7 +33,7 @@ const Chat = ({setMessages}) => {
         <h1 className="visually-hidden">Chat room</h1>
 
         <div className="main-chat_left-column">
-          <h2 className="main-chat_caption">Room: ___</h2>
+        <h2 className="main-chat_caption">Room: {userData.roomId}</h2>
           <h2 className="main-chat_caption">Users: {serverData.users.length}</h2>
           <ul className="main-chat_list">
             {
@@ -49,10 +55,9 @@ const Chat = ({setMessages}) => {
 
         <div className="main-chat_right-column">
           <div className="main-chat_right-wrapper">
-            <ul className="main-chat_message-list">
+            <ul ref={messagesRef} className="main-chat_message-list">
               {
                 serverData.messages.map((message, i) => {
-                  console.log(message.userName, userData.userName)
                   return (
                     <li 
                       className={message.userName === userData.userName ? 
@@ -65,7 +70,10 @@ const Chat = ({setMessages}) => {
                         "main-chat_message-list-message" :
                         "main-chat_message-list-message main-chat_message-list-message--another"
                       }>{message.text}</p>
-                      <span>{message.userName}</span>
+                      <span className={message.userName === userData.userName ?
+                        "main-chat_message-list-userName" :
+                        "main-chat_message-list-userName main-chat_message-list-userName--another"
+                      }>{message.userName}</span>
                     </li>
                   );
                 })
@@ -78,7 +86,7 @@ const Chat = ({setMessages}) => {
             placeholder="type your message..."
             value={messageValue}
             onChange={(evt) => {
-              setMessafeValue(evt.target.value);
+              setMessageValue(evt.target.value);
             }}
           >
           </textarea>

@@ -4,7 +4,7 @@ import {AppContext} from '../chat-context/chat-context';
 import {SERVER_URL} from '../../consts';
 
 const AuthPage = () => {
-  const {roomNumber, setUserData, setServerData} = React.useContext(AppContext);
+  const {setUserData, setServerData} = React.useContext(AppContext);
   const [isLoading, setLoading] = React.useState(false);
 
   const roomRef = React.useRef(null);
@@ -43,14 +43,17 @@ const AuthPage = () => {
             isAuth: true
           }
         })
+
         socket.emit('ROOM_JOIN', obj);
+
         axios
           .get(`${SERVER_URL}/rooms/${obj.roomId}`)
           .then(({data}) => {
             setServerData((prev) => {
               return {
                 ...prev,
-                users: data.users
+                users: data.users,
+                messages: data.messages
               }
             })
           })
@@ -72,10 +75,21 @@ const AuthPage = () => {
 
           <div className="main-page_content">
             <div className="main-page_content_input-wrapper">
-              <input className="main-page_content-roomNumber main-page_input" ref={roomRef} type="text" placeholder="Room number"/>
+              <input 
+                className="main-page_content-roomNumber main-page_input" 
+                ref={roomRef} 
+                type="text" 
+                placeholder="Room number"
+              />
             </div>
             <div className="main-page_content_input-wrapper">
-             <input className="main-page_content-userName main-page_input" ref={userRef}  type="text" placeholder="User name"/>  
+              <input 
+                className="main-page_content-userName main-page_input" 
+                ref={userRef}  
+                type="text" 
+                placeholder="User name"
+                minLength="6"
+              />  
             </div>
             <button
               disabled={isLoading}

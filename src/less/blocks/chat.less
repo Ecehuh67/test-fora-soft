@@ -101,6 +101,7 @@
 
 .main-chat_message-list-item {
   display: flex;
+  position: relative;
 
   box-sizing: border-box;
   margin-bottom: 20px;
@@ -121,6 +122,18 @@
 
 .main-chat_message-list-message--another {
   background-color: #78e08f;
+}
+
+.main-chat_message-list-userName {
+  position: absolute;
+  bottom: -7px;
+
+  color: rgba(0, 0, 0, 0.5);
+  font-style: italic;
+}
+
+.main-chat_message-list-userName--another {
+  right: 0;
 }
 
 .main-chat_message-input {
