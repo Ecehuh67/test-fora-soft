@@ -8,8 +8,7 @@ const ChatProvider = (props) => {
   });
   const [serverData, setServerData] = React.useState({
     users: [],
-    messages: [],
-    authorMessage: ''
+    messages: []
   });
 
   const setUsers = (users) => {
@@ -18,7 +17,7 @@ const ChatProvider = (props) => {
         ...prev,
         users
       }
-    })
+    });
   };
 
   const setMessages = (messages) => {
@@ -27,7 +26,7 @@ const ChatProvider = (props) => {
         ...prev,
         messages: [...prev.messages, messages]
       }
-    })
+    });
   };
 
   const sampleAppContext = {
@@ -37,7 +36,7 @@ const ChatProvider = (props) => {
     setServerData,
     setUsers,
     setMessages
-  }
+  };
 
   return (
     <AppContext.Provider

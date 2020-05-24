@@ -1,11 +1,13 @@
 import socket from '../../socket';
 import axios from 'axios';
+import RegPage from '../reg-page/reg-page';
 import {AppContext} from '../chat-context/chat-context';
 import {SERVER_URL} from '../../consts';
 
 const AuthPage = () => {
   const {setUserData, setServerData} = React.useContext(AppContext);
   const [isLoading, setLoading] = React.useState(false);
+  const [isСheckIn, setCheckIn] = React.useState(false);
 
   const roomRef = React.useRef(null);
   const userRef = React.useRef(null);
@@ -65,45 +67,62 @@ const AuthPage = () => {
   };
 
   return (
-    <main className="main-page html-wrapper">
-        <section className="main-page_wrapper">
-          <h1 className="main-page_caption visually-hidden">Authentication data</h1>
+    <>
+      {
+        isСheckIn ? 
 
-          <div className="main-page_color-cap">
-            <h2 className="main-page_cap-caption">Welcome to the Light Chat, please authorize yourself to be able to talk with others</h2>
-          </div>
+        <RegPage handler={setCheckIn}/> :
 
-          <div className="main-page_content">
-            <div className="main-page_content_input-wrapper">
-              <input 
-                className="main-page_content-roomNumber main-page_input" 
-                ref={roomRef} 
-                type="text" 
-                placeholder="Room number"
-              />
+        <main className="main-page html-wrapper">
+          <section className="main-page_wrapper">
+            <h1 className="main-page_caption visually-hidden">Authentication data</h1>
+
+            <div className="main-page_color-cap">
+              <h2 className="main-page_cap-caption">Welcome to the Light Chat, please authorize yourself to be able to talk with others</h2>
             </div>
-            <div className="main-page_content_input-wrapper">
-              <input 
-                className="main-page_content-userName main-page_input" 
-                ref={userRef}  
-                type="text" 
-                placeholder="User name"
-                minLength="6"
-              />  
+
+            <div className="main-page_content">
+              <div className="main-page_content_input-wrapper">
+                <input 
+                  className="main-page_content-roomNumber main-page_input" 
+                  ref={roomRef} 
+                  type="text" 
+                  placeholder="Room number"
+                />
+              </div>
+              <div className="main-page_content_input-wrapper">
+                <input 
+                  className="main-page_content-userName main-page_input" 
+                  ref={userRef}  
+                  type="text" 
+                  placeholder="User name"
+                  minLength="6"
+                />  
+              </div>
+              <button
+                disabled={isLoading}
+                className="main-page_content-button" 
+                type="button"
+                onClick={onSend}
+              >
+                {
+                  !isLoading ? 'Enter' : 'Entering...'
+                }
+              </button>
             </div>
-            <button
-              disabled={isLoading}
-              className="main-page_content-button" 
-              type="button"
-              onClick={onSend}
+            <a 
+              className="main-page_link" 
+              href="#"
+              onClick={() => {
+                setCheckIn(true)
+              }}
             >
-              {
-                !isLoading ? 'Enter' : 'Entering...'
-              }
-            </button>
-          </div>
-        </section>
-      </main>
+              Click here for Registration >>
+            </a>
+          </section>
+        </main>
+      }
+    </>
   );
 };
 
