@@ -5,9 +5,10 @@ import {AppContext} from '../chat-context/chat-context';
 import {SERVER_URL} from '../../consts';
 
 const AuthPage = () => {
-  const {setUserData, setServerData} = React.useContext(AppContext);
+  const {setUserData, setServerData, isAuth} = React.useContext(AppContext);
   const [isLoading, setLoading] = React.useState(false);
   const [isСheckIn, setCheckIn] = React.useState(false);
+  const [login, setLogin] = React.useState('');
 
   const roomRef = React.useRef(null);
   const userRef = React.useRef(null);
@@ -71,7 +72,7 @@ const AuthPage = () => {
       {
         isСheckIn ? 
 
-        <RegPage handler={setCheckIn}/> :
+        <RegPage handler={setCheckIn} setLogin={setLogin}/> :
 
         <main className="main-page html-wrapper">
           <section className="main-page_wrapper">
@@ -93,10 +94,10 @@ const AuthPage = () => {
               <div className="main-page_content_input-wrapper">
                 <input 
                   className="main-page_content-userName main-page_input" 
-                  ref={userRef}  
+                  ref={userRef}
+                  defaultValue={login}  
                   type="text" 
                   placeholder="User name"
-                  minLength="6"
                 />  
               </div>
               <button
@@ -110,7 +111,9 @@ const AuthPage = () => {
                 }
               </button>
             </div>
-            <a 
+            {
+              !isAuth &&
+              <a 
               className="main-page_link" 
               href="#"
               onClick={() => {
@@ -119,6 +122,7 @@ const AuthPage = () => {
             >
               Click here for Registration >>
             </a>
+            }
           </section>
         </main>
       }

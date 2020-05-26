@@ -98,12 +98,67 @@
   border: 1px solid transparent;
 
   &:focus {
-    border: 1px solid blue;
+    border: 1px solid #78e08f;
+  }
+}
+
+.main-registration__form-input--error {
+  border: 1px solid red;
+
+  &:focus {
+    border: 1px solid red;
   }
 }
 
 .main-registration__form-input:last-of-type {
   margin-bottom: 30px;
+}
+
+.main-registration__form-label {
+  position: relative;
+}
+
+.main-registration__form-input-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-registration__form-input-wrapper--error {
+  color: red;
+
+  &:focus-within::before {
+    content: 'Unfortunately, this name has alredy been used by another user, so change it';
+
+    position: absolute;
+    box-sizing: border-box;
+    z-index: 100;
+
+    top: -28px;
+    left: 100px;
+    padding: 5px 15px;
+
+    max-width: 80%;
+
+    border: 1px solid grey;
+    background-color: white;
+  }
+
+  &:focus-within::after {
+    content: '';
+    position: absolute;
+    z-index: 95;
+
+    top: 22px;
+    left: 120px;
+
+    width: 0;
+    height: 0;
+
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid grey;
+  }
 }
 
 .main-registration__form-submit {

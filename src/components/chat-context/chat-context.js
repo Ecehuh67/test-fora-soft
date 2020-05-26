@@ -10,6 +10,7 @@ const ChatProvider = (props) => {
     users: [],
     messages: []
   });
+  const [isAuth, setAuth] = React.useState(false);
 
   const setUsers = (users) => {
     setServerData((prev) => {
@@ -32,6 +33,8 @@ const ChatProvider = (props) => {
   const sampleAppContext = {
     userData,
     serverData,
+    isAuth, 
+    setAuth,
     setUserData,
     setServerData,
     setUsers,

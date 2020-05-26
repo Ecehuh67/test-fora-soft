@@ -7,6 +7,8 @@ const io = require('socket.io')(server);
 app.use(cors());
 app.use(express.json());
 
+
+const users = ['Albert', 'Colin', 'Deny672'];
 const rooms = new Map();
 
 app.get('/rooms/:id', (req, res) => {
@@ -39,6 +41,15 @@ app.post('/rooms', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  socket.on('CHECK_NAME', ({userName}) => {
+    if (!users.includes(userName)) {
+      users.push(userName);
+      socket.emit('CHECK_NAME', true);
+    } else {
+      socket.emit('CHECK_NAME', false);
+      console.log('wrong')
+    }
+  });
 
   socket.on('ROOM_JOIN', ({roomId, userName}) => {
     socket.join(roomId);
