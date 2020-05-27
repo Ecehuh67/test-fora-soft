@@ -1,14 +1,14 @@
 const AppContext = React.createContext(null);
 
 const ChatProvider = (props) => {
-  const [userData , setUserData] = React.useState({
+  const [userData, setUserData] = React.useState({
     isAuth: false,
     roomId: null,
-    userName: ''
+    userName: '',
   });
   const [serverData, setServerData] = React.useState({
     users: [],
-    messages: []
+    messages: [],
   });
   const [isAuth, setAuth] = React.useState(false);
 
@@ -16,8 +16,8 @@ const ChatProvider = (props) => {
     setServerData((prev) => {
       return {
         ...prev,
-        users
-      }
+        users,
+      };
     });
   };
 
@@ -25,30 +25,28 @@ const ChatProvider = (props) => {
     setServerData((prev) => {
       return {
         ...prev,
-        messages: [...prev.messages, messages]
-      }
+        messages: [...prev.messages, messages],
+      };
     });
   };
 
   const sampleAppContext = {
     userData,
     serverData,
-    isAuth, 
+    isAuth,
     setAuth,
     setUserData,
     setServerData,
     setUsers,
-    setMessages
+    setMessages,
   };
 
   return (
-    <AppContext.Provider
-      value={sampleAppContext}
-    >
+    <AppContext.Provider value={sampleAppContext}>
       {props.children}
     </AppContext.Provider>
   );
 };
 
 export default ChatProvider;
-export {AppContext};
+export { AppContext };

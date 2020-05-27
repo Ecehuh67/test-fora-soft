@@ -6,37 +6,32 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname, 'public'),
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json']
+    extensions: ['.js', '.jsx', '.json'],
   },
   devServer: {
     contentBase: path.resolve(__dirname, 'public'),
     port: 3000,
-    open: true
+    open: true,
   },
   plugins: [
     new webpack.ProvidePlugin({
       React: 'react',
-      ReactDOM: 'react-dom'
+      ReactDOM: 'react-dom',
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
-    })
+    }),
   ],
   devtool: 'source-map',
   module: {
     rules: [
       {
-        
         test: /style.less$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'less-loader'
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
       },
       {
         test: /\.(js|jsx)$/,
@@ -44,7 +39,7 @@ module.exports = {
         use: {
           loader: `babel-loader`,
         },
-      }
-    ]
-  }
-}
+      },
+    ],
+  },
+};
