@@ -1,16 +1,16 @@
-import socket from "../../socket";
-import {AppContext} from '../chat-context/chat-context';
-import {validateEmail} from '../../consts';
+import socket from '../../socket';
+import { AppContext } from '../chat-context/chat-context';
+import { validateEmail } from '../../consts';
 
-const RegPage = ({handler, setLogin}) => {
-  const {setAuth} = React.useContext(AppContext);
+const RegPage = ({ handler, setLogin }) => {
+  const { setAuth } = React.useContext(AppContext);
   const firstNameRef = React.useRef(null);
   const secondNameRef = React.useRef(null);
   const userNameRef = React.useRef(null);
   const emailRef = React.useRef(null);
 
   const validateName = (value) => {
-    if (value.length > 5 && value.length < 30 ) {
+    if (value.length > 5 && value.length < 30) {
       return true;
     }
 
@@ -18,89 +18,109 @@ const RegPage = ({handler, setLogin}) => {
   };
 
   const onSubmit = () => {
-    const firstName = firstNameRef.current.value;
-    const secondName= secondNameRef.current.value;
-    const userName= userNameRef.current.value;
-    const email = emailRef.current.value;
-    const names = [firstName, secondName, userName];
+    const firstNameElem = firstNameRef.current;
+    const secondNameElem = secondNameRef.current;
+    const userNameElem = userNameRef.current;
+    const emailElem = emailRef.current;
 
-    const isEmailValid = validateEmail(email);
-    const isNamesValid = names.every(validateName);
+    const formFields = [firstNameElem, secondNameElem, userNameElem, emailElem];
+    const isEmailValid = validateEmail(emailElem.value);
+    const isValuesValid = formFields.every((el) => validateName(el.value));
 
-    let user ={};
+    const clearErrorClass = () => {
+      formFields.forEach((field) => {
+        field.classList.remove('main-registration__form-input--error');
+      });
+    };
 
-    if(isEmailValid && isNamesValid) {
+    let user = {};
+
+    if (isEmailValid && isValuesValid) {
+      clearErrorClass();
+
       user = {
-        firstName: firstName,
-        secondName: secondName,
-        userName: userName,
-        email: email,
+        firstName: firstNameElem.value,
+        secondName: secondNameElem.value,
+        userName: userNameElem.value,
+        email: emailElem.value,
       };
 
       socket.emit('CHECK_NAME', user);
       socket.on('CHECK_NAME', (bool) => {
-        if(bool) {
+        if (bool) {
           handler(false);
-          setLogin(userName);
+          setLogin(userNameElem.value);
           setAuth(true);
         } else {
-          userNameRef.current.focus();
-          userNameRef.current.classList.add('main-registration__form-input--error');
-          userNameRef.current.parentNode.classList.add('main-registration__form-input-wrapper--error');
+          userNameElem.focus();
+          userNameElem.classList.add('main-registration__form-input--error');
+          userNameElem.parentNode.classList.add(
+            'main-registration__form-input-wrapper--error'
+          );
         }
-      })
+      });
     } else {
-      // const wrongNames = names.
+      clearErrorClass();
+
+      const wrongFields = formFields
+        .map((field, i) => (validateName(field.value) ? '' : i))
+        .filter((it) => it !== '');
+
+      wrongFields.map((it) => {
+        formFields[it].classList.add('main-registration__form-input--error');
+      });
     }
   };
 
   return (
     <main className="main-registration html-wrapper">
-      <section className="main-registration__wapper">
+      <section className="main-registration__wrapper">
         <div className="main-registration__form-wrapper">
           <div className="main-registration__heading">
-          <svg className="main-registration__form-icon" width="64" height="64">
+            <svg
+              className="main-registration__form-icon"
+              width="64"
+              height="64"
+            >
               <use xlinkHref="#chat-icon"></use>
             </svg>
             <p className="main-registration__heading-caption">Light Chat</p>
 
-            <button 
+            <button
               className="main-registration__button-close"
               onClick={() => {
-                handler(false)
+                handler(false);
               }}
             >
               Close
             </button>
           </div>
           <form className="main-registration__form">
-
-
             <div className="main-registration__form-input-wrapper">
-              <label 
+              <label
                 className="main-registration__form-label"
                 htmlFor="first-name"
               >
                 First Name
               </label>
               <input
-                className="main-registration__form-input" 
-                type="text" 
+                className="main-registration__form-input"
+                type="text"
                 id="first-name"
                 placeholder="Required"
                 ref={firstNameRef}
               />
-           </div>
+            </div>
 
             <div className="main-registration__form-input-wrapper">
-              <label 
+              <label
                 className="main-registration__form-label"
                 htmlFor="second-name"
               >
                 Second name
               </label>
               <input
-                className="main-registration__form-input" 
+                className="main-registration__form-input"
                 type="text"
                 id="second-name"
                 placeholder="Required"
@@ -109,13 +129,13 @@ const RegPage = ({handler, setLogin}) => {
             </div>
 
             <div className="main-registration__form-input-wrapper">
-              <label 
+              <label
                 className="main-registration__form-label"
                 htmlFor="nick-name"
               >
                 User name
               </label>
-              <input 
+              <input
                 className="main-registration__form-input"
                 type="text"
                 id="nick-name"
@@ -125,13 +145,10 @@ const RegPage = ({handler, setLogin}) => {
             </div>
 
             <div className="main-registration__form-input-wrapper">
-              <label 
-                className="main-registration__form-label"
-                htmlFor="email"
-              >
+              <label className="main-registration__form-label" htmlFor="email">
                 Email
               </label>
-              <input 
+              <input
                 className="main-registration__form-input"
                 type="text"
                 id="email"
