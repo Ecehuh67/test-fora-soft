@@ -2,7 +2,7 @@ import { AppContext } from '../chat-context/chat-context';
 import socket from '../../socket';
 
 const Chat = ({ setMessages }) => {
-  const { serverData, userData } = React.useContext(AppContext);
+  const { serverData, userData, setUserData } = React.useContext(AppContext);
   const [messageValue, setMessageValue] = React.useState('');
   const messagesRef = React.useRef(null);
 
@@ -24,30 +24,41 @@ const Chat = ({ setMessages }) => {
     socket.emit('ROOM:NEW_MESSAGE', obj);
 
     setMessageValue('');
-    setMessages({
-      userName: userData.userName,
-      text: messageValue,
-    });
+    setMessages(obj);
   };
 
   return (
     <main className="main-chat html-wrapper">
-      <section className="main-chat_wrapper">
+      <section className="main-chat__wrapper">
         <h1 className="visually-hidden">Chat room</h1>
 
-        <div className="main-chat_left-column">
-          <h2 className="main-chat_caption">Room: {userData.roomId}</h2>
-          <h2 className="main-chat_caption">
+        <div className="main-chat__left-column">
+          <button
+            className="main-chat__leave-button"
+            type="button"
+            onClick={() => {
+              setUserData({ isAuth: false });
+            }}
+          >
+            <svg className="main-chat__leave-icon" width="32" height="32">
+              <use xlinkHref="#chat-leave-button"></use>
+            </svg>
+          </button>
+          {/* <svg className="main-chat__leave-icon" width="32" height="32">
+            <use xlinkHref="#chat-leave-button"></use>
+          </svg> */}
+          <h2 className="main-chat___caption">Room: {userData.roomId}</h2>
+          <h2 className="main-chat__caption">
             Users: {serverData.users.length}
           </h2>
-          <ul className="main-chat_list">
+          <ul className="main-chat__list">
             {serverData.users.map((user, i) => {
               return (
                 <li
                   className={
                     user === userData.userName
-                      ? 'main-chat_list-item main-chat_list-item--active'
-                      : 'main-chat_list-item'
+                      ? 'main-chat__list-item main-chat__list-item--active'
+                      : 'main-chat__list-item'
                   }
                   key={new Date() + i}
                 >
@@ -58,24 +69,24 @@ const Chat = ({ setMessages }) => {
           </ul>
         </div>
 
-        <div className="main-chat_right-column">
-          <div className="main-chat_right-wrapper">
-            <ul ref={messagesRef} className="main-chat_message-list">
+        <div className="main-chat__right-column">
+          <div className="main-chat__right-wrapper">
+            <ul ref={messagesRef} className="main-chat__message-list">
               {serverData.messages.map((message, i) => {
                 return (
                   <li
                     className={
                       message.userName === userData.userName
-                        ? 'main-chat_message-list-item'
-                        : 'main-chat_message-list-item main-chat_message-list-item--another'
+                        ? 'main-chat__message-list-item'
+                        : 'main-chat__message-list-item main-chat__message-list-item--another'
                     }
                     key={new Date() + i}
                   >
                     <p
                       className={
                         message.userName === userData.userName
-                          ? 'main-chat_message-list-message'
-                          : 'main-chat_message-list-message main-chat_message-list-message--another'
+                          ? 'main-chat__message-list-message'
+                          : 'main-chat__message-list-message main-chat__message-list-message--another'
                       }
                     >
                       {message.text}
@@ -83,8 +94,8 @@ const Chat = ({ setMessages }) => {
                     <span
                       className={
                         message.userName === userData.userName
-                          ? 'main-chat_message-list-userName'
-                          : 'main-chat_message-list-userName main-chat_message-list-userName--another'
+                          ? 'main-chat__message-list-userName'
+                          : 'main-chat__message-list-userName main-chat__message-list-userName--another'
                       }
                     >
                       {message.userName}
@@ -95,7 +106,7 @@ const Chat = ({ setMessages }) => {
             </ul>
           </div>
           <textarea
-            className="main-chat_message-input"
+            className="main-chat__message-input"
             rows="2"
             placeholder="type your message..."
             value={messageValue}
@@ -103,9 +114,13 @@ const Chat = ({ setMessages }) => {
               setMessageValue(evt.target.value);
             }}
           ></textarea>
-          <button className="main-chat_message-send" onClick={onSend}>
+          <button className="main-chat__message-send" onClick={onSend}>
             <span className="visually-hidden">send</span>
-            <svg className="main-chat_message-send-icon" width="24" height="24">
+            <svg
+              className="main-chat__message-send-icon"
+              width="24"
+              height="24"
+            >
               <use xlinkHref="#send-icon"></use>
             </svg>
           </button>

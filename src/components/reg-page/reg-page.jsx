@@ -1,6 +1,11 @@
 import socket from '../../socket';
 import { AppContext } from '../chat-context/chat-context';
-import { validateEmail } from '../../consts';
+import {
+  validateEmail,
+  ERROR_CSS_CLASSES,
+  VALID_LENGTH_FIELDS,
+  showErrElem,
+} from '../../consts';
 
 const RegPage = ({ handler, setLogin }) => {
   const { setAuth } = React.useContext(AppContext);
@@ -10,7 +15,10 @@ const RegPage = ({ handler, setLogin }) => {
   const emailRef = React.useRef(null);
 
   const validateName = (value) => {
-    if (value.length > 5 && value.length < 30) {
+    if (
+      value.length > VALID_LENGTH_FIELDS.min &&
+      value.length < VALID_LENGTH_FIELDS.max
+    ) {
       return true;
     }
 
@@ -29,7 +37,7 @@ const RegPage = ({ handler, setLogin }) => {
 
     const clearErrorClass = () => {
       formFields.forEach((field) => {
-        field.classList.remove('main-registration__form-input--error');
+        field.classList.remove(ERROR_CSS_CLASSES.registerPAge.input);
       });
     };
 
@@ -52,10 +60,10 @@ const RegPage = ({ handler, setLogin }) => {
           setLogin(userNameElem.value);
           setAuth(true);
         } else {
-          userNameElem.focus();
-          userNameElem.classList.add('main-registration__form-input--error');
-          userNameElem.parentNode.classList.add(
-            'main-registration__form-input-wrapper--error'
+          showErrElem(
+            userNameElem,
+            ERROR_CSS_CLASSES.registerPAge.input,
+            ERROR_CSS_CLASSES.registerPAge.wrapper
           );
         }
       });
@@ -67,7 +75,7 @@ const RegPage = ({ handler, setLogin }) => {
         .filter((it) => it !== '');
 
       wrongFields.map((it) => {
-        formFields[it].classList.add('main-registration__form-input--error');
+        formFields[it].classList.add(ERROR_CSS_CLASSES.registerPAge.input);
       });
     }
   };

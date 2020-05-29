@@ -2,7 +2,12 @@ import socket from '../../socket';
 import axios from 'axios';
 import RegPage from '../reg-page/reg-page';
 import { AppContext } from '../chat-context/chat-context';
-import { SERVER_URL, generateRandomUserName } from '../../consts';
+import {
+  SERVER_URL,
+  generateRandomUserName,
+  ERROR_CSS_CLASSES,
+  showErrElem,
+} from '../../consts';
 
 const AuthPage = () => {
   const { setUserData, setServerData, isAuth } = React.useContext(AppContext);
@@ -15,13 +20,6 @@ const AuthPage = () => {
 
   const validateRoomNumber = (value) =>
     typeof +value === 'number' && !Number.isNaN(+value) && value.length > 0;
-  const showErrElem = (nodeElem) => {
-    nodeElem.focus();
-    nodeElem.classList.add('main-page_content-roomNumber--error');
-    nodeElem.parentNode.classList.add(
-      'main-page_content_input-wrapper--roomError'
-    );
-  };
 
   const onSend = async () => {
     const roomElem = roomRef.current;
@@ -29,7 +27,11 @@ const AuthPage = () => {
     const isValid = validateRoomNumber(roomElem.value);
 
     if (!isValid) {
-      return showErrElem(roomElem);
+      return showErrElem(
+        roomElem,
+        ERROR_CSS_CLASSES.authPage.input,
+        ERROR_CSS_CLASSES.authPage.wrapper
+      );
     }
 
     const obj = {
