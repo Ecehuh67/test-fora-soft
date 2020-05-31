@@ -76,6 +76,7 @@ const RegPage = ({ handler, setLogin }) => {
 
       wrongFields.map((it) => {
         formFields[it].classList.add(ERROR_CSS_CLASSES.registerPAge.input);
+        return null;
       });
     }
   };
@@ -90,12 +91,13 @@ const RegPage = ({ handler, setLogin }) => {
               width="64"
               height="64"
             >
-              <use xlinkHref="#chat-icon"></use>
+              <use xlinkHref="#chat-icon" />
             </svg>
             <p className="main-registration__heading-caption">Light Chat</p>
 
             <button
               className="main-registration__button-close"
+              type="button"
               onClick={() => {
                 handler(false);
               }}
@@ -130,6 +132,7 @@ const RegPage = ({ handler, setLogin }) => {
               <input
                 className="main-registration__form-input"
                 type="text"
+                name="second-name"
                 id="second-name"
                 placeholder="Required"
                 ref={secondNameRef}

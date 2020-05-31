@@ -1,0 +1,13 @@
+{
+  'extends': ['airbnb', 'prettier', 'prettier/react'],
+  'env': { 'es6': true, 'node': true },
+  'globals': { 'React': true, 'ReactDOM': true, 'document': true },
+  'rules':
+    {
+      'react/prop-types': 0,
+      'react/destructuring-assignment': 0,
+      'jsx-a11y/label-has-associated-control': 0,
+      'import/no-named-as-default': 0,
+    },
+  'parserOptions': { 'ecmaFeatures': { 'jsx': true }, 'sourceType': module },
+}

@@ -1,5 +1,5 @@
-import socket from '../../socket';
 import axios from 'axios';
+import socket from '../../socket';
 import RegPage from '../reg-page/reg-page';
 import { AppContext } from '../chat-context/chat-context';
 import {
@@ -66,10 +66,9 @@ const AuthPage = () => {
       })
       .catch((err) => {
         throw new Error(err);
-        console.log(
-          'Smth has happened on the server, so let us try again after few minutes'
-        );
       });
+
+    return null;
   };
 
   return (
@@ -120,15 +119,16 @@ const AuthPage = () => {
               </button>
             </div>
             {!isAuth && (
-              <a
+              <button
                 className="main-page_link"
+                type="button"
                 href="#"
                 onClick={() => {
                   setCheckIn(true);
                 }}
               >
-                Click here for Registration >>
-              </a>
+                {'Click here for Registration >>'}
+              </button>
             )}
           </section>
         </main>

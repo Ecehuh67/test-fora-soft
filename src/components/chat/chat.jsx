@@ -41,18 +41,15 @@ const Chat = ({ setMessages }) => {
             }}
           >
             <svg className="main-chat__leave-icon" width="32" height="32">
-              <use xlinkHref="#chat-leave-button"></use>
+              <use xlinkHref="#chat-leave-button" />
             </svg>
           </button>
-          {/* <svg className="main-chat__leave-icon" width="32" height="32">
-            <use xlinkHref="#chat-leave-button"></use>
-          </svg> */}
           <h2 className="main-chat___caption">Room: {userData.roomId}</h2>
           <h2 className="main-chat__caption">
             Users: {serverData.users.length}
           </h2>
           <ul className="main-chat__list">
-            {serverData.users.map((user, i) => {
+            {serverData.users.map((user) => {
               return (
                 <li
                   className={
@@ -60,7 +57,7 @@ const Chat = ({ setMessages }) => {
                       ? 'main-chat__list-item main-chat__list-item--active'
                       : 'main-chat__list-item'
                   }
-                  key={new Date() + i}
+                  key={user + Math.random()}
                 >
                   {user}
                 </li>
@@ -72,7 +69,7 @@ const Chat = ({ setMessages }) => {
         <div className="main-chat__right-column">
           <div className="main-chat__right-wrapper">
             <ul ref={messagesRef} className="main-chat__message-list">
-              {serverData.messages.map((message, i) => {
+              {serverData.messages.map((message) => {
                 return (
                   <li
                     className={
@@ -80,7 +77,7 @@ const Chat = ({ setMessages }) => {
                         ? 'main-chat__message-list-item'
                         : 'main-chat__message-list-item main-chat__message-list-item--another'
                     }
-                    key={new Date() + i}
+                    key={message + Math.random()}
                   >
                     <p
                       className={
@@ -113,15 +110,19 @@ const Chat = ({ setMessages }) => {
             onChange={(evt) => {
               setMessageValue(evt.target.value);
             }}
-          ></textarea>
-          <button className="main-chat__message-send" onClick={onSend}>
+          />
+          <button
+            className="main-chat__message-send"
+            onClick={onSend}
+            type="button"
+          >
             <span className="visually-hidden">send</span>
             <svg
               className="main-chat__message-send-icon"
               width="24"
               height="24"
             >
-              <use xlinkHref="#send-icon"></use>
+              <use xlinkHref="#send-icon" />
             </svg>
           </button>
         </div>
