@@ -1,5 +1,7 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const cors = require('cors');
 const express = require('express');
+
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
@@ -7,7 +9,7 @@ const io = require('socket.io')(server);
 app.use(cors());
 app.use(express.json());
 
-const users = ['Albert', 'Colin', 'Deny672'];
+const logins = ['Albert', 'Colin', 'Deny672'];
 const rooms = new Map();
 
 app.get('/rooms/:id', (req, res) => {
@@ -43,12 +45,11 @@ app.post('/rooms', (req, res) => {
 
 io.on('connection', (socket) => {
   socket.on('CHECK_NAME', ({ userName }) => {
-    if (!users.includes(userName)) {
-      users.push(userName);
+    if (!logins.includes(userName)) {
+      logins.push(userName);
       socket.emit('CHECK_NAME', true);
     } else {
       socket.emit('CHECK_NAME', false);
-      console.log('wrong');
     }
   });
 
@@ -76,8 +77,6 @@ io.on('connection', (socket) => {
       }
     });
   });
-
-  console.log('User connected', socket.id);
 });
 
 server.listen(3001, (err) => {
