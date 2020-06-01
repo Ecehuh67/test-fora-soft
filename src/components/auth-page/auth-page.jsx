@@ -11,13 +11,20 @@ import {
 
 const AuthPage = () => {
   const { setUserData, setServerData, isAuth } = React.useContext(AppContext);
+
+  // block button to prevent second sending of data 
   const [isLoading, setLoading] = React.useState(false);
+
+  // hide auth element for users who is auth
   const [isСheckIn, setCheckIn] = React.useState(false);
+
+  // autocomplete user name after process of auth
   const [login, setLogin] = React.useState('');
 
   const roomRef = React.useRef(null);
   const userRef = React.useRef(null);
 
+  // check roomNumber is only numbers
   const validateRoomNumber = (value) =>
     typeof +value === 'number' && !Number.isNaN(+value) && value.length > 0;
 
@@ -26,6 +33,7 @@ const AuthPage = () => {
     const userElem = userRef.current;
     const isValid = validateRoomNumber(roomElem.value);
 
+    // show red frame around incorrect fields
     if (!isValid) {
       return showErrElem(
         roomElem,
@@ -34,11 +42,13 @@ const AuthPage = () => {
       );
     }
 
+    // appropriate name if user isn't auth
     const obj = {
       roomId: roomElem.value,
       userName: !isAuth ? `${generateRandomUserName()}` : userElem.value,
     };
 
+    // create new room if there isn't one or connect to existing one
     axios
       .post(`${SERVER_URL}/rooms`, obj)
       .then(() => {
@@ -52,8 +62,10 @@ const AuthPage = () => {
           };
         });
 
+        // notify another users that smb has connected
         socket.emit('ROOM_JOIN', obj);
 
+        // get history for each room
         axios.get(`${SERVER_URL}/rooms/${obj.roomId}`).then(({ data }) => {
           setServerData((prev) => {
             return {

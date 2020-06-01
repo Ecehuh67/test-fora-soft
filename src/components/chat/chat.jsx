@@ -6,24 +6,31 @@ const Chat = ({ setMessages }) => {
   const [messageValue, setMessageValue] = React.useState('');
   const messagesRef = React.useRef(null);
 
+  // scroll screen every time a message has been sent
   React.useEffect(() => {
     messagesRef.current.scrollTo(0, 999999);
   }, [serverData.messages]);
 
   const onSend = () => {
+    // not allow to sent empty data to the server 
     if (messageValue.length === 0) {
       return;
     }
 
+    // create data for server
     const obj = {
       userName: userData.userName,
       text: messageValue,
       roomId: userData.roomId,
     };
 
+    // new message has been written
     socket.emit('ROOM:NEW_MESSAGE', obj);
 
+    // clear message input after message was been sent
     setMessageValue('');
+
+    // add users data into messages' array
     setMessages(obj);
   };
 

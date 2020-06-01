@@ -8,12 +8,15 @@ import {
 } from '../../consts';
 
 const RegPage = ({ handler, setLogin }) => {
+  
+  // switcher for changing screens
   const { setAuth } = React.useContext(AppContext);
   const firstNameRef = React.useRef(null);
   const secondNameRef = React.useRef(null);
   const userNameRef = React.useRef(null);
   const emailRef = React.useRef(null);
 
+  // Set valid length of user name
   const validateName = (value) => {
     if (
       value.length > VALID_LENGTH_FIELDS.min &&
@@ -25,22 +28,26 @@ const RegPage = ({ handler, setLogin }) => {
     return false;
   };
 
+
   const onSubmit = () => {
     const firstNameElem = firstNameRef.current;
     const secondNameElem = secondNameRef.current;
     const userNameElem = userNameRef.current;
     const emailElem = emailRef.current;
 
+    // simplify following operations with fields
     const formFields = [firstNameElem, secondNameElem, userNameElem, emailElem];
     const isEmailValid = validateEmail(emailElem.value);
     const isValuesValid = formFields.every((el) => validateName(el.value));
 
+    // will set red frame aroung wrong fields 
     const clearErrorClass = () => {
       formFields.forEach((field) => {
         field.classList.remove(ERROR_CSS_CLASSES.registerPAge.input);
       });
     };
 
+    // data for sending to the server to save name into Array
     let user = {};
 
     if (isEmailValid && isValuesValid) {
@@ -53,7 +60,10 @@ const RegPage = ({ handler, setLogin }) => {
         email: emailElem.value,
       };
 
+      // check existence of name in the server array
       socket.emit('CHECK_NAME', user);
+
+      // if the name has already exsisted then server return false flag
       socket.on('CHECK_NAME', (bool) => {
         if (bool) {
           handler(false);
@@ -68,12 +78,16 @@ const RegPage = ({ handler, setLogin }) => {
         }
       });
     } else {
+
+      // update condition of valid fields
       clearErrorClass();
 
+      // define which fields are wrong
       const wrongFields = formFields
         .map((field, i) => (validateName(field.value) ? '' : i))
         .filter((it) => it !== '');
 
+      // set red frame for wrong fields
       wrongFields.map((it) => {
         formFields[it].classList.add(ERROR_CSS_CLASSES.registerPAge.input);
         return null;
