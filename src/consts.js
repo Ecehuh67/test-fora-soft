@@ -1,5 +1,7 @@
 export const SERVER_URL = 'http://localhost:3001';
 
+export const RANDOM_ROOM = 1000;
+
 export const ERROR_CSS_CLASSES = {
   registerPAge: {
     input: 'main-registration__form-input--error',

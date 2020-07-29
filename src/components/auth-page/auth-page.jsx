@@ -7,10 +7,14 @@ import {
   generateRandomUserName,
   ERROR_CSS_CLASSES,
   showErrElem,
+  RANDOM_ROOM,
 } from '../../consts';
 
 const AuthPage = () => {
   const { setUserData, setServerData, isAuth } = React.useContext(AppContext);
+
+  // Generate random room number 
+  const [randomRoomId, setRandomRoomId] = React.useState(null);
 
   // block button to prevent second sending of data 
   const [isLoading, setLoading] = React.useState(false);
@@ -111,6 +115,17 @@ const AuthPage = () => {
                   type="text"
                   placeholder="Room number"
                 />
+                <button 
+                  className="main-page_content-roomButton" 
+                  type="button"
+                  onClick={() => {
+                    const randomNumber = Math.floor(Math.random() * RANDOM_ROOM);
+                    setRandomRoomId(randomNumber);
+                    roomRef.current.value = randomNumber;
+                  }}
+                >
+                  random room?!
+                </button>
               </div>
               <div className="main-page_content_input-wrapper">
                 <input

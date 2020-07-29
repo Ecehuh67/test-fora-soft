@@ -77,6 +77,17 @@ io.on('connection', (socket) => {
       }
     });
   });
+
+  socket.on('INVITE:USER', ({ roomId, userName }) => {
+    const users = [];
+    rooms.forEach((it) => {
+      const names = [...it.get('users').values()];
+      if (!names.includes(userName)) {
+        users.push(...it.get('users').values())
+      }
+    })
+    socket.to(roomId).emit('USERS:INVITE', users);
+  })
 });
 
 server.listen(3001, (err) => {

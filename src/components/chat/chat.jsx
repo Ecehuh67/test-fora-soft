@@ -34,6 +34,16 @@ const Chat = ({ setMessages }) => {
     setMessages(obj);
   };
 
+  const onInvite = () => {
+    const obj = {
+      userName: userData.userName,
+      text: messageValue,
+      roomId: userData.roomId,
+    };
+
+    socket.emit('INVITE:USER', obj);
+  }
+
   return (
     <main className="main-chat html-wrapper">
       <section className="main-chat__wrapper">
@@ -51,10 +61,19 @@ const Chat = ({ setMessages }) => {
               <use xlinkHref="#chat-leave-button" />
             </svg>
           </button>
+
           <h2 className="main-chat___caption">Room: {userData.roomId}</h2>
           <h2 className="main-chat__caption">
             Users: {serverData.users.length}
           </h2>
+          <button 
+            className="main-chat__invite-button"
+            type="button"
+            onClick={onInvite}
+          >
+            + Invite
+          </button>
+            
           <ul className="main-chat__list">
             {serverData.users.map((user) => {
               return (

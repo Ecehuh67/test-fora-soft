@@ -41,6 +41,7 @@
 
 .main-page_content_input-wrapper {
   display: flex;
+  position: relative;
 }
 
 .main-page_content_input-wrapper--roomError {
@@ -82,7 +83,7 @@
   flex-grow: 1;
   box-sizing: border-box;
   padding: 5px 10px;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 
   min-width: 300px;
   min-height: 60px;
@@ -102,6 +103,32 @@
   &:focus {
     border: 1px solid red;
   }
+}
+
+.main-page_content-roomButton {
+  position: absolute;
+  bottom: 60%;
+  right: 0;
+
+  width: 150px;
+  color: blue;
+
+  outline: none;
+  border: none;
+  background: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: #78e08f;
+  }
+
+  &:active {
+    color: #82ccdd;
+  }
+}
+
+.main-page_content-roomNumber {
+  padding-right: 150px;
 }
 
 .main-page_content-userName {
