@@ -7,13 +7,13 @@ const ChatProvider = (props) => {
     isAuth: false,
     roomId: null,
     userName: '',
-    invitations: [] 
   });
 
   // only for getting from server
   const [serverData, setServerData] = React.useState({
     users: [],
     messages: [],
+    onlineUsers: []
   });
   const [isAuth, setAuth] = React.useState(false);
 
@@ -27,12 +27,12 @@ const ChatProvider = (props) => {
     });
   };
 
-  const setInvitation = (users) => {
-    console.log(users)
-    setUserData((prev) => {
+  // Get users from the server
+  const getOnlineUsers = (users) => {
+    setServerData((prev) => {
       return {
         ...prev,
-        invitations: users
+        onlineUsers: users
       }
     })
   }
@@ -56,7 +56,7 @@ const ChatProvider = (props) => {
     setServerData,
     setUsers,
     setMessages,
-    setInvitation
+    getOnlineUsers
   };
 
   return (

@@ -78,7 +78,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  socket.on('INVITE:USER', ({ roomId, userName }) => {
+  socket.on('USERS:ONLINE', ({ userName }) => {
     const users = [];
     rooms.forEach((it) => {
       const names = [...it.get('users').values()];
@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
         users.push(...it.get('users').values())
       }
     })
-    socket.to(roomId).emit('USERS:INVITE', users);
+    socket.emit('USERS:ONLINE', users);
   })
 });
 

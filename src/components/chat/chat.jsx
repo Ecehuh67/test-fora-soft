@@ -5,11 +5,16 @@ const Chat = ({ setMessages }) => {
   const { serverData, userData, setUserData } = React.useContext(AppContext);
   const [messageValue, setMessageValue] = React.useState('');
   const messagesRef = React.useRef(null);
+  const userListRef = React.useRef(null);
 
   // scroll screen every time a message has been sent
   React.useEffect(() => {
     messagesRef.current.scrollTo(0, 999999);
   }, [serverData.messages]);
+
+  React.useEffect(() => {
+    console.log(serverData)
+  }, [serverData.onlineUsers]);
 
   const onSend = () => {
     // not allow to sent empty data to the server 
@@ -34,14 +39,24 @@ const Chat = ({ setMessages }) => {
     setMessages(obj);
   };
 
-  const onInvite = () => {
+  const getUsers = () => {
     const obj = {
       userName: userData.userName,
       text: messageValue,
       roomId: userData.roomId,
     };
 
-    socket.emit('INVITE:USER', obj);
+    socket.emit('USERS:ONLINE', obj);
+  }
+
+  const sendInvite = (user) => {
+    const obj ={
+      userName: userData.userName,
+      roomId: userData.roomId,
+      receiver: user
+    }
+
+    socket.emit('USERS:INVITE', obj);
   }
 
   return (
@@ -69,10 +84,55 @@ const Chat = ({ setMessages }) => {
           <button 
             className="main-chat__invite-button"
             type="button"
-            onClick={onInvite}
+            onClick={() => {
+              const element = userListRef.current;
+              getUsers();
+              if (element.classList.contains('main-chat__invite-form--hidden')) {
+                element.classList.remove('main-chat__invite-form--hidden')
+              }
+            }}
           >
             + Invite
           </button>
+
+          <div className="main-chat__invite-form main-chat__invite-form--hidden invite-form " ref={userListRef}>
+            <button 
+              className="main-chat__invite-form-hide"
+              type="button"
+              onClick={() => {
+                const element = userListRef.current;
+                if (!element.classList.contains('main-chat__invite-form--hidden')) {
+                  element.classList.add('main-chat__invite-form--hidden')
+                }
+              }}
+            >
+              &times;
+            </button>
+            <input className="invite-form__search" type="text"/>
+            <ul className="invite-form__list">
+              {
+                serverData.onlineUsers.map((user) => {
+                  return (
+                    <li
+                    className="invite-form__item"
+                    key={Math.random() * new Date()}
+                    >
+                      <span>{user}</span>
+                      <button
+                        className="invite-form__item-button"
+                        type="button"
+                        onClick={() => {
+                          sendInvite(user)
+                        }}
+                      >
+                        +
+                      </button>
+                    </li>
+                  )
+                })
+              }
+            </ul>
+          </div>
             
           <ul className="main-chat__list">
             {serverData.users.map((user) => {
