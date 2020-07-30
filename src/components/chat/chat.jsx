@@ -4,6 +4,7 @@ import socket from '../../socket';
 const Chat = ({ setMessages }) => {
   const { serverData, userData, setUserData } = React.useContext(AppContext);
   const [messageValue, setMessageValue] = React.useState('');
+  const [filteredUsers, setFilter] = React.useState([]);
   const messagesRef = React.useRef(null);
   const userListRef = React.useRef(null);
 
@@ -13,7 +14,7 @@ const Chat = ({ setMessages }) => {
   }, [serverData.messages]);
 
   React.useEffect(() => {
-    console.log(serverData)
+    setFilter(serverData.onlineUsers)
   }, [serverData.onlineUsers]);
 
   const onSend = () => {
@@ -108,16 +109,27 @@ const Chat = ({ setMessages }) => {
             >
               &times;
             </button>
-            <input className="invite-form__search" type="text"/>
+            <input 
+              className="invite-form__search" 
+              type="text"
+              onChange={(evt) => {
+                const {value} = evt.target;
+                const newList = serverData.onlineUsers
+                  .slice()
+                  .filter((user) => user.toLowerCase().includes(value.toLowerCase()));
+                
+                setFilter(newList)
+              }}
+            />
             <ul className="invite-form__list">
               {
-                serverData.onlineUsers.map((user) => {
+                filteredUsers.map((user) => {
                   return (
                     <li
                     className="invite-form__item"
                     key={Math.random() * new Date()}
                     >
-                      <span>{user}</span>
+                      <span className="invite-form__item-name">{user}</span>
                       <button
                         className="invite-form__item-button"
                         type="button"
