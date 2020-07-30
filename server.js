@@ -55,6 +55,8 @@ io.on('connection', (socket) => {
 
   socket.on('ROOM_JOIN', ({ roomId, userName }) => {
     socket.join(roomId);
+
+    console.log(userName)
     rooms.get(roomId).get('users').set(socket.id, userName);
     const users = [...rooms.get(roomId).get('users').values()];
     socket.to(roomId).broadcast.emit('ROOM:SET_USERS', users);
@@ -87,6 +89,24 @@ io.on('connection', (socket) => {
       }
     })
     socket.emit('USERS:ONLINE', users);
+  })
+
+  socket.on('USERS:INVITE', ({userName, roomId, receiver}) => {
+    const obj = {
+      userName,
+      roomId
+    }
+    
+    let receiverID = null;
+    rooms.forEach((room) => {
+      room.get('users').forEach((user, id) => {
+        if (user === receiver) {
+          receiverID = id
+        }
+      })
+    })
+
+    socket.in(receiverID).emit('USERS:INVITE', obj);
   })
 });
 

@@ -7,6 +7,7 @@ const ChatProvider = (props) => {
     isAuth: false,
     roomId: null,
     userName: '',
+    invitation: null
   });
 
   // only for getting from server
@@ -35,6 +36,15 @@ const ChatProvider = (props) => {
         onlineUsers: users
       }
     })
+  };
+
+  const invitePerson = (invitation) => {
+    setUserData((prev) => {
+      return {
+        ...prev,
+        invitation
+      }
+    })
   }
 
   // save messages and push users's own messages into data to imitate getting from server
@@ -56,7 +66,8 @@ const ChatProvider = (props) => {
     setServerData,
     setUsers,
     setMessages,
-    getOnlineUsers
+    getOnlineUsers,
+    invitePerson
   };
 
   return (

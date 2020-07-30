@@ -7,16 +7,25 @@ const Chat = ({ setMessages }) => {
   const [filteredUsers, setFilter] = React.useState([]);
   const messagesRef = React.useRef(null);
   const userListRef = React.useRef(null);
+  const inviteButtonRef = React.useRef(null);
 
   // scroll screen every time a message has been sent
   React.useEffect(() => {
     messagesRef.current.scrollTo(0, 999999);
   }, [serverData.messages]);
 
+  // Refresh online list of users
   React.useEffect(() => {
     setFilter(serverData.onlineUsers)
   }, [serverData.onlineUsers]);
 
+  // Refresh invitations
+  React.useEffect(() => {
+    console.log(userData)
+  }, [userData]);
+
+
+  // Send a message
   const onSend = () => {
     // not allow to sent empty data to the server 
     if (messageValue.length === 0) {
@@ -40,6 +49,7 @@ const Chat = ({ setMessages }) => {
     setMessages(obj);
   };
 
+  // Send a request to take online users back
   const getUsers = () => {
     const obj = {
       userName: userData.userName,
@@ -50,6 +60,7 @@ const Chat = ({ setMessages }) => {
     socket.emit('USERS:ONLINE', obj);
   }
 
+  // 
   const sendInvite = (user) => {
     const obj ={
       userName: userData.userName,
@@ -83,13 +94,15 @@ const Chat = ({ setMessages }) => {
             Users: {serverData.users.length}
           </h2>
           <button 
-            className="main-chat__invite-button"
+            className='main-chat__invite-button'
             type="button"
+            ref={inviteButtonRef}
             onClick={() => {
               const element = userListRef.current;
               getUsers();
               if (element.classList.contains('main-chat__invite-form--hidden')) {
-                element.classList.remove('main-chat__invite-form--hidden')
+                element.classList.remove('main-chat__invite-form--hidden');
+                inviteButtonRef.current.classList.add('main-chat__invite-button--hidden');
               }
             }}
           >
@@ -102,8 +115,10 @@ const Chat = ({ setMessages }) => {
               type="button"
               onClick={() => {
                 const element = userListRef.current;
+                console.log(inviteButtonRef)
                 if (!element.classList.contains('main-chat__invite-form--hidden')) {
                   element.classList.add('main-chat__invite-form--hidden')
+                  inviteButtonRef.current.classList.remove('main-chat__invite-button--hidden')
                 }
               }}
             >
