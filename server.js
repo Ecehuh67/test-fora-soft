@@ -55,8 +55,6 @@ io.on('connection', (socket) => {
 
   socket.on('ROOM_JOIN', ({ roomId, userName }) => {
     socket.join(roomId);
-
-    console.log(userName)
     rooms.get(roomId).get('users').set(socket.id, userName);
     const users = [...rooms.get(roomId).get('users').values()];
     socket.to(roomId).broadcast.emit('ROOM:SET_USERS', users);
@@ -85,29 +83,30 @@ io.on('connection', (socket) => {
     rooms.forEach((it) => {
       const names = [...it.get('users').values()];
       if (!names.includes(userName)) {
-        users.push(...it.get('users').values())
+        users.push(...it.get('users').values());
       }
-    })
+    });
     socket.emit('USERS:ONLINE', users);
-  })
+  });
 
-  socket.on('USERS:INVITE', ({userName, roomId, receiver}) => {
+  socket.on('USERS:INVITE', ({ userName, roomId, receiver }) => {
     const obj = {
       userName,
-      roomId
-    }
-    
+      roomId,
+      receiver,
+    };
+
     let receiverID = null;
     rooms.forEach((room) => {
       room.get('users').forEach((user, id) => {
         if (user === receiver) {
-          receiverID = id
+          receiverID = id;
         }
-      })
-    })
+      });
+    });
 
     socket.in(receiverID).emit('USERS:INVITE', obj);
-  })
+  });
 });
 
 server.listen(3001, (err) => {

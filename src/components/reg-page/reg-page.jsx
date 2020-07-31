@@ -8,7 +8,6 @@ import {
 } from '../../consts';
 
 const RegPage = ({ handler, setLogin }) => {
-  
   // switcher for changing screens
   const { setAuth } = React.useContext(AppContext);
   const firstNameRef = React.useRef(null);
@@ -28,7 +27,6 @@ const RegPage = ({ handler, setLogin }) => {
     return false;
   };
 
-
   const onSubmit = () => {
     const firstNameElem = firstNameRef.current;
     const secondNameElem = secondNameRef.current;
@@ -40,7 +38,7 @@ const RegPage = ({ handler, setLogin }) => {
     const isEmailValid = validateEmail(emailElem.value);
     const isValuesValid = formFields.every((el) => validateName(el.value));
 
-    // will set red frame aroung wrong fields 
+    // will set red frame aroung wrong fields
     const clearErrorClass = () => {
       formFields.forEach((field) => {
         field.classList.remove(ERROR_CSS_CLASSES.registerPAge.input);
@@ -78,7 +76,6 @@ const RegPage = ({ handler, setLogin }) => {
         }
       });
     } else {
-
       // update condition of valid fields
       clearErrorClass();
 

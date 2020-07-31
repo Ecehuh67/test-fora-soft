@@ -11,12 +11,13 @@ import {
 } from '../../consts';
 
 const AuthPage = () => {
-  const { setUserData, setServerData, isAuth } = React.useContext(AppContext);
+  const { setUserData, setServerData, userData } = React.useContext(AppContext);
 
-  // Generate random room number 
+  // Generate random room number
+  // eslint-disable-next-line no-unused-vars
   const [randomRoomId, setRandomRoomId] = React.useState(null);
 
-  // block button to prevent second sending of data 
+  // block button to prevent second sending of data
   const [isLoading, setLoading] = React.useState(false);
 
   // hide auth element for users who is auth
@@ -49,7 +50,9 @@ const AuthPage = () => {
     // appropriate name if user isn't auth
     const obj = {
       roomId: roomElem.value,
-      userName: !isAuth ? `${generateRandomUserName()}` : userElem.value,
+      userName: !userData.isAuth
+        ? `${generateRandomUserName()}`
+        : userElem.value,
     };
 
     // create new room if there isn't one or connect to existing one
@@ -87,6 +90,16 @@ const AuthPage = () => {
     return null;
   };
 
+  // If user accept invitation to go to the room
+  React.useEffect(() => {
+    if (userData.name !== '' && userData.roomId !== null) {
+      userRef.current.value = userData.userName;
+      roomRef.current.value = userData.roomId;
+
+      onSend();
+    }
+  }, [userData]);
+
   return (
     <>
       {isСheckIn ? (
@@ -100,7 +113,7 @@ const AuthPage = () => {
 
             <div className="main-page_color-cap">
               <h2 className="main-page_cap-caption">
-                {isAuth
+                {userData.isAuth
                   ? `${login} , Welcome! You have successfully registered, so just fill in room number and start chatting`
                   : `Welcome to the Light Chat, please authorize yourself to be able
                 to talk with others`}
@@ -115,11 +128,13 @@ const AuthPage = () => {
                   type="text"
                   placeholder="Room number"
                 />
-                <button 
-                  className="main-page_content-roomButton" 
+                <button
+                  className="main-page_content-roomButton"
                   type="button"
                   onClick={() => {
-                    const randomNumber = Math.floor(Math.random() * RANDOM_ROOM);
+                    const randomNumber = Math.floor(
+                      Math.random() * RANDOM_ROOM
+                    );
                     setRandomRoomId(randomNumber);
                     roomRef.current.value = randomNumber;
                   }}
@@ -145,7 +160,7 @@ const AuthPage = () => {
                 {!isLoading ? 'Enter' : 'Entering...'}
               </button>
             </div>
-            {!isAuth && (
+            {!userData.isAuth && (
               <button
                 className="main-page_link"
                 type="button"

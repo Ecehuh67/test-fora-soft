@@ -1,24 +1,23 @@
 const AppContext = React.createContext(null);
 
 const ChatProvider = (props) => {
-
   // data for manipulating condition inside the application
   const [userData, setUserData] = React.useState({
     isAuth: false,
     roomId: null,
     userName: '',
-    invitation: null
+    invitation: null,
   });
 
   // only for getting from server
   const [serverData, setServerData] = React.useState({
     users: [],
     messages: [],
-    onlineUsers: []
+    onlineUsers: [],
   });
   const [isAuth, setAuth] = React.useState(false);
 
-  // save users 
+  // save users
   const setUsers = (users) => {
     setServerData((prev) => {
       return {
@@ -33,19 +32,20 @@ const ChatProvider = (props) => {
     setServerData((prev) => {
       return {
         ...prev,
-        onlineUsers: users
-      }
-    })
+        onlineUsers: users,
+      };
+    });
   };
 
+  // Refresh userData if user has got invitation
   const invitePerson = (invitation) => {
     setUserData((prev) => {
       return {
         ...prev,
-        invitation
-      }
-    })
-  }
+        invitation,
+      };
+    });
+  };
 
   // save messages and push users's own messages into data to imitate getting from server
   const setMessages = (messages) => {
@@ -67,7 +67,7 @@ const ChatProvider = (props) => {
     setUsers,
     setMessages,
     getOnlineUsers,
-    invitePerson
+    invitePerson,
   };
 
   return (
