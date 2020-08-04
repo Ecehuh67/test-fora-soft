@@ -238,10 +238,16 @@
 }
 
 .main-chat__list-item {
+  display: flex;
+  justify-content: space-between;
   box-sizing: border-box;
   padding: 10px 5px;
 
   border-radius: 10px;
+
+  & > button {
+    margin-right: 20px;
+  }
 }
 
 .main-chat__list-item--active {
@@ -392,5 +398,79 @@
 
   &:active {
     fill: #78e08f;
+  }
+}
+
+.main-chat__list-item-call {
+  right: 10%;
+
+  width: 30px;
+  height: 30px;
+
+  font-size: 0;
+
+  border-radius: 50%;
+  border: none;
+  outline: none;
+
+  background-color: lightgreen;
+
+  &:hover {
+    background-color: #82ccdd;
+  }
+}
+
+.main-chat__message-call {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  box-sizing: border-box;
+  padding: 100px;
+
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0, 31, 63, 1);
+}
+
+.main-chat__message-call--hidden {
+  display: none;
+}
+
+.call-screen__remote-video {
+  width: 100%;
+  height: 100%;
+}
+
+.call-screen__local-video {
+  position: absolute;
+  top: 100px;
+  right: 100px;
+
+  width: 30%;
+  height: 20%;
+}
+
+.call-screen__put-down {
+  position: absolute;
+  bottom: 40px;
+  right: calc(50% - (50px / 2));
+
+  width: 50px;
+  height: 50px;
+
+  font-size: 0;
+
+  border-radius: 50%;
+  background-color: red;
+
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: #78e08f;
   }
 }

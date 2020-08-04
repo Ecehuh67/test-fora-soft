@@ -1,7 +1,10 @@
+/* eslint-disable no-undef */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+import PeerJs from 'peerjs'
 import { AppContext } from '../chat-context/chat-context';
 import socket from '../../socket';
+
 
 const Chat = ({ setMessages }) => {
   const { serverData, userData, setUserData } = React.useContext(AppContext);
@@ -11,6 +14,23 @@ const Chat = ({ setMessages }) => {
   const userListRef = React.useRef(null);
   const inviteButtonRef = React.useRef(null);
   const alertMenuRef = React.useRef(null);
+  const videoRef = React.useRef(null);
+
+  const {mediaDevices} = navigator;
+
+  // Get an User's ID
+  React.useEffect(() => {
+    const peer = new PeerJs();
+    peer.on('open', (id) => {
+      setUserData((prev) => {
+        return {
+          ...prev,
+          peerID: id
+        }
+      })
+      console.log(`My peer ID is: ${  id}`);
+    });
+  }, []);
 
   // scroll screen every time a message has been sent
   React.useEffect(() => {
@@ -67,6 +87,20 @@ const Chat = ({ setMessages }) => {
 
     socket.emit('USERS:INVITE', obj);
   };
+
+  const makeCall = () => {
+    const video = videoRef.current;
+
+    const stream = mediaDevices.getUserMedia({audio: true, video: true})
+    .then(function(mediaStream) {
+      video.srcObject = mediaStream;
+      video.onloadedmetadata = function(e) {
+        video.play();
+      };
+    })
+    .catch(function(err) { console.log(`${err.name  }: ${  err.message}`); });
+
+  }
 
   return (
     <main className="main-chat html-wrapper">
@@ -254,6 +288,24 @@ const Chat = ({ setMessages }) => {
                   key={user + Math.random()}
                 >
                   {user}
+
+                  {user === userData.userName && 
+                  <button 
+                    className="main-chat__list-item-call" 
+                    type="button"
+                    onClick={() => {
+                      const parent = videoRef.current.parentNode;
+                      parent.classList.remove('main-chat__message-call--hidden');
+                      makeCall()
+                    }}
+                  >
+                    <svg
+              width="20"
+              height="20"
+            >
+              <use xlinkHref="#phone-icon" />
+            </svg>
+                  </button>}
                 </li>
               );
             })}
@@ -319,6 +371,26 @@ const Chat = ({ setMessages }) => {
               <use xlinkHref="#send-icon" />
             </svg>
           </button>
+          <div className="main-chat__message-call main-chat__message-call--hidden call-screen">
+              <video className="call-screen__local-video" autoPlay muted ref={videoRef}/>
+              <video className="call-screen__remote-video" autoPlay id="remote-video"/>
+            <button
+              className="call-screen__put-down" 
+              type="button" 
+              onClick={() => {
+                const parent = videoRef.current.parentNode;
+                parent.classList.add('main-chat__message-call--hidden');
+              }
+              } 
+            >
+               <svg
+              width="24"
+              height="24"
+            >
+              <use xlinkHref="#phone-icon" />
+            </svg>
+            </button>
+          </div>
         </div>
       </section>
     </main>
