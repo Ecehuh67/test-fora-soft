@@ -11,6 +11,7 @@ const App = () => {
     setMessages,
     getOnlineUsers,
     invitePerson,
+    getPeers,
   } = React.useContext(AppContext);
 
   React.useEffect(() => {
@@ -18,6 +19,7 @@ const App = () => {
     socket.on('ROOM:SET_MESSAGES', setMessages);
     socket.on('USERS:ONLINE', getOnlineUsers);
     socket.on('USERS:INVITE', invitePerson);
+    socket.on('USERS:PEERS', getPeers);
   }, []);
 
   return (

@@ -11,6 +11,7 @@ app.use(express.json());
 
 const logins = ['Albert', 'Colin', 'Deny672'];
 const rooms = new Map();
+const peers = [];
 
 app.get('/rooms/:id', (req, res) => {
   const { id: roomId } = req.params;
@@ -87,6 +88,11 @@ io.on('connection', (socket) => {
       }
     });
     socket.emit('USERS:ONLINE', users);
+  });
+
+  socket.on('USERS:PEER_ID', (obj) => {
+    peers.push(obj);
+    socket.emit('USERS:PEERS', peers);
   });
 
   socket.on('USERS:INVITE', ({ userName, roomId, receiver }) => {

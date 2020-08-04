@@ -1,10 +1,10 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable no-undef */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import PeerJs from 'peerjs'
+import PeerJs from 'peerjs';
 import { AppContext } from '../chat-context/chat-context';
 import socket from '../../socket';
-
 
 const Chat = ({ setMessages }) => {
   const { serverData, userData, setUserData } = React.useContext(AppContext);
@@ -15,22 +15,28 @@ const Chat = ({ setMessages }) => {
   const inviteButtonRef = React.useRef(null);
   const alertMenuRef = React.useRef(null);
   const videoRef = React.useRef(null);
+  const remoteVideoRef = React.useRef(null);
 
-  const {mediaDevices} = navigator;
+  const { mediaDevices } = navigator;
+  const peer = new PeerJs();
 
-  // Get an User's ID
-  React.useEffect(() => {
-    const peer = new PeerJs();
-    peer.on('open', (id) => {
-      setUserData((prev) => {
-        return {
-          ...prev,
-          peerID: id
-        }
+  const getVideoContent = () => {
+    const video = videoRef.current;
+
+    const stream = mediaDevices
+      .getUserMedia({ audio: true, video: true })
+      .then((mediaStream) => {
+        video.srcObject = mediaStream;
+        video.onloadedmetadata = () => {
+          video.play();
+        };
       })
-      console.log(`My peer ID is: ${  id}`);
-    });
-  }, []);
+      .catch((err) => {
+        console.log(`${err.name}: ${err.message}`);
+      });
+
+    return stream;
+  };
 
   // scroll screen every time a message has been sent
   React.useEffect(() => {
@@ -41,6 +47,32 @@ const Chat = ({ setMessages }) => {
   React.useEffect(() => {
     setFilter(serverData.onlineUsers);
   }, [serverData.onlineUsers]);
+
+  // Get an User's ID
+  React.useEffect(() => {
+    peer.on('open', (id) => {
+      setUserData((prev) => {
+        return {
+          ...prev,
+          peerID: id,
+        };
+      });
+
+      console.log(id);
+
+      const obj = {
+        userName: userData.userName,
+        peerId: id,
+      };
+
+      socket.emit('USERS:PEER_ID', obj);
+    });
+
+    peer.on('call', (call) => {
+      const stream = getVideoContent();
+      call.answer(stream);
+    });
+  }, []);
 
   // Send a message
   const onSend = () => {
@@ -88,19 +120,18 @@ const Chat = ({ setMessages }) => {
     socket.emit('USERS:INVITE', obj);
   };
 
-  const makeCall = () => {
-    const video = videoRef.current;
+  const callUser = (name) => {
+    const id = serverData.peers
+      .slice()
+      .filter((user) => user.userName === name)[0].peerId;
 
-    const stream = mediaDevices.getUserMedia({audio: true, video: true})
-    .then(function(mediaStream) {
-      video.srcObject = mediaStream;
-      video.onloadedmetadata = function(e) {
-        video.play();
-      };
-    })
-    .catch(function(err) { console.log(`${err.name  }: ${  err.message}`); });
+    const stream = getVideoContent();
+    const call = peer.call(id, stream);
 
-  }
+    call.on('stream', (remoteStream) => {
+      remoteVideoRef.current.srcObject = remoteStream;
+    });
+  };
 
   return (
     <main className="main-chat html-wrapper">
@@ -289,23 +320,23 @@ const Chat = ({ setMessages }) => {
                 >
                   {user}
 
-                  {user === userData.userName && 
-                  <button 
-                    className="main-chat__list-item-call" 
-                    type="button"
-                    onClick={() => {
-                      const parent = videoRef.current.parentNode;
-                      parent.classList.remove('main-chat__message-call--hidden');
-                      makeCall()
-                    }}
-                  >
-                    <svg
-              width="20"
-              height="20"
-            >
-              <use xlinkHref="#phone-icon" />
-            </svg>
-                  </button>}
+                  {user !== userData.userName && (
+                    <button
+                      className="main-chat__list-item-call"
+                      type="button"
+                      onClick={() => {
+                        const parent = videoRef.current.parentNode;
+                        parent.classList.remove(
+                          'main-chat__message-call--hidden'
+                        );
+                        callUser(user);
+                      }}
+                    >
+                      <svg width="20" height="20">
+                        <use xlinkHref="#phone-icon" />
+                      </svg>
+                    </button>
+                  )}
                 </li>
               );
             })}
@@ -372,23 +403,28 @@ const Chat = ({ setMessages }) => {
             </svg>
           </button>
           <div className="main-chat__message-call main-chat__message-call--hidden call-screen">
-              <video className="call-screen__local-video" autoPlay muted ref={videoRef}/>
-              <video className="call-screen__remote-video" autoPlay id="remote-video"/>
+            <video
+              className="call-screen__local-video"
+              autoPlay
+              muted
+              ref={videoRef}
+            />
+            <video
+              className="call-screen__remote-video"
+              autoPlay
+              ref={remoteVideoRef}
+            />
             <button
-              className="call-screen__put-down" 
-              type="button" 
+              className="call-screen__put-down"
+              type="button"
               onClick={() => {
                 const parent = videoRef.current.parentNode;
                 parent.classList.add('main-chat__message-call--hidden');
-              }
-              } 
+              }}
             >
-               <svg
-              width="24"
-              height="24"
-            >
-              <use xlinkHref="#phone-icon" />
-            </svg>
+              <svg width="24" height="24">
+                <use xlinkHref="#phone-icon" />
+              </svg>
             </button>
           </div>
         </div>

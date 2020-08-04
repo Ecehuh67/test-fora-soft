@@ -14,6 +14,7 @@ const ChatProvider = (props) => {
     users: [],
     messages: [],
     onlineUsers: [],
+    peers: [],
   });
   const [isAuth, setAuth] = React.useState(false);
 
@@ -33,6 +34,15 @@ const ChatProvider = (props) => {
       return {
         ...prev,
         onlineUsers: users,
+      };
+    });
+  };
+
+  const getPeers = (peers) => {
+    setServerData((prev) => {
+      return {
+        ...prev,
+        peers,
       };
     });
   };
@@ -68,6 +78,7 @@ const ChatProvider = (props) => {
     setMessages,
     getOnlineUsers,
     invitePerson,
+    getPeers,
   };
 
   return (
